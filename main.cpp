@@ -51,7 +51,7 @@ int main()
 
     FILE *output_file, *lapack_file;
     output_file = fopen("output0.txt", "w");
-    lapack_file = fopen("lapack_output0", "w");
+    lapack_file = fopen("lapack_output0.txt", "w");
     if (output_file == NULL)
     {
         // fopen失敗
