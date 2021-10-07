@@ -1,7 +1,7 @@
 gcc_options = -std=c++17 -Wall --pedantic-errors
 l_b = -llapacke -lblas
 
-program : main.o printmat.o function_v2.o gso.o make_mat.o
+program : main.o printmat.o sparse_lanczos.o gso.o inputdata.o sparse_dgemv.o vec_Initialize.o
 	g++ -o $@ $^ $(l_b)
 
 main.o : main.cpp
@@ -10,13 +10,19 @@ main.o : main.cpp
 printmat.o : printmat.cpp
 	g++ -c $< $(l_b)
 
-function_v2.o : function_v2.cpp
+sparse_lanczos.o : sparse_lanczos.cpp
 	g++ -c $< $(l_b)
 
 gso.o : gso.cpp
 	g++ -c $< $(l_b)
 
-make_mat.o : make_mat.cpp
+inputdata.o : inputdata.cpp
+	g++ -c $< $(l_b)
+
+sparse_dgemv.o : sparse_dgemv.cpp
+	g++ -c $< $(l_b)
+
+vec_Initialize.o : vec_Initialize.cpp
 	g++ -c $< $(l_b)
 
 run : program

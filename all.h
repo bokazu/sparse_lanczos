@@ -67,14 +67,26 @@
 #include "cblas.h"
 #include "lapacke.h"
 
-void printmat(int n, double* A);
-void fprintmat(FILE* file, int n, double* A);
-void printvec(int n, double* B);
-void fprintvec(FILE* file, int n, double* B);
-void print2dvec(int n, double** C);
-void fprint2dvec(FILE* file, int n, double** C);
-void calc_ab(FILE* file, int n, double* A, double* eigenv);
+void printmat_d(int n, double* A);
+void printmat_i(int n, int* A);
+void fprintmat_d(FILE* file, int n, double* A);
+void fprintmat_i(FILE* file, int n, int* A);
+void printvec_d(int n, double* B);
+void printvec_i(int n, int* B);
+void fprintvec_d(FILE* file, int n, double* B);
+void fprintvec_i(FILE* file, int n, int* B);
+void print2dvec_d(int n, double** C);
+void fprint2dvec_d(FILE* file, int n, double** C);
 void gso(int n, int k, double** u);
 void sdz(int n, double* v);
-void make_mat(int n, double* A);
+void sparse_lanczos(FILE* file, int n, int elements, int* row, int* col,
+                    double* val, double* eigen_value);
+void input_coo_data(std::string filename, int elements, int* row, int* col,
+                    double* val);
+void input_dns_data(std::string filename, int n, double* A);
+void get_matrix_size(std::string filename, int& n, int& elements);
+void sparse_dgemv(int n, int elements, double* v, int* row, int* col,
+                  double* val, double* u);
+void Initiailize_vec(int n, double* vec);
+void Initiailize_vec(int n, int* vec);
 #endif

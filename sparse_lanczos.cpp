@@ -5,9 +5,9 @@ using namespace std;
 lapack_int LAPACKE_dstev(int matrix_order, char jobz, lapack_int n, double *d,
                          double *e, double *z, lapack_int ldz);
 
-void calc_ab(FILE *file, int n, double *A, double *eigen_value)
+void sparse_lanczos(FILE *file, int n, int elements, int *row, int *col,
+                    double *val, double *eigen_value)
 {
-    cout << "start function_v2\n";
     // setting Initial vector & standarbilization
     double **u = new double *[n];
     for (int i = 0; i < n; i++)
@@ -44,21 +44,20 @@ void calc_ab(FILE *file, int n, double *A, double *eigen_value)
 
     for (int k = 0; k < n; k++)
     {
+        Initiailize_vec(n, v);
         if (checker)
         {
             if (k == n - 1)
             {
                 // calculate v[i] = Au0(k)
-                cblas_dgemv(CblasRowMajor, CblasNoTrans, n, n, 1.0, A, n, u[k],
-                            1, 0.0, v, 1);
+                sparse_dgemv(n, elements, v, row, col, val, u[k]);
                 // calculate alpha & beta
                 alpha[k] = cblas_ddot(n, v, 1, u[k], 1);
             }
             else
             {
                 // calculate v[i] = Au0(k)
-                cblas_dgemv(CblasRowMajor, CblasNoTrans, n, n, 1.0, A, n, u[k],
-                            1, 0.0, v, 1);
+                sparse_dgemv(n, elements, v, row, col, val, u[k]);
                 if (k == 0)
                 {
                     alpha[k] = cblas_ddot(n, v, 1, u[k], 1);
@@ -141,11 +140,16 @@ void calc_ab(FILE *file, int n, double *A, double *eigen_value)
         count++;
     }
     if (count % 2 == 0)
+    {
         cblas_dcopy(n, eigenv_odd, 1, eigen_value, 1);
+    }
     else
+    {
         cblas_dcopy(n, eigenv_even, 1, eigen_value, 1);
+    }
+
     printf("eigen value = \n");
-    printvec(n, eigen_value);
+    printvec_d(n, eigen_value);
     fprintf(file, "\n");
     fprintf(file, "\n");
     fprintf(file, "count = \n");
@@ -153,7 +157,7 @@ void calc_ab(FILE *file, int n, double *A, double *eigen_value)
     fprintf(file, "\n");
     fprintf(file, "\n");
     fprintf(file, "eigen value = \n");
-    fprintvec(file, n, eigen_value);
+    fprintvec_d(file, n, eigen_value);
 
     cout << "end\n";
     for (int i = 0; i < n; i++)
