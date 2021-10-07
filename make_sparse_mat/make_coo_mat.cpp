@@ -1,22 +1,32 @@
 #include "all.h"
 using namespace std;
 
-void make_coo_mat(int n)
+int main()
 {
+    int n = 100;
     int *col = new int[n * n];
     int *row = new int[n * n];
     double *val = new double[n * n];
+    double *A = new double[n * n];
     int index = 0;
     double mtmp;
     double prob = 0.3;
 
-    FILE *file;
-    file = fopen("../sample/coo_sample1.txt", "w");
-    if (file == NULL)
+    FILE *coo_file, *dns_file;
+    coo_file = fopen("../sample/coo_sample1.txt", "w");
+    if (coo_file == NULL)
     {
         // fopen失敗
         // streamにstdout指定なので実質printfと同じ
-        fprintf(stdout, "fopen error fp[%p]\n", file);
+        fprintf(stdout, "fopen error fp[%p]\n", coo_file);
+    }
+
+    dns_file = fopen("../sample/dns_sample1.txt", "w");
+    if (dns_file == NULL)
+    {
+        // fopen失敗
+        // streamにstdout指定なので実質printfと同じ
+        fprintf(stdout, "fopen error fp[%p]\n", dns_file);
     }
 
     // make sparse matrix
@@ -30,6 +40,7 @@ void make_coo_mat(int n)
                 row[index] = i;
                 col[index] = j;
                 val[index] = 1.0;
+                A[n * i + j] = 1.0;
                 index++;
                 //対称成分も格納する
                 if (i != j)
@@ -37,20 +48,30 @@ void make_coo_mat(int n)
                     row[index] = j;
                     col[index] = i;
                     val[index] = 1.0;
+                    A[n * j + i] = 1.0;
                     index++;
                 }
             }
         }
     }
 
-    // output to file
-    fprintf(file, "%d %d %d\n", n, n, index);
+    // output to file coo_sample1.txt
+    fprintf(coo_file, "%d %d %d\n", n, n, index);
     for (int i = 0; i < index; ++i)
     {
-        fprintf(file, "%d %d %2.2f\n", row[i], col[i], val[i]);
+        fprintf(coo_file, "%d %d %1.1f\n", row[i], col[i], val[i]);
     }
 
+    for (int i = 0; i < n; ++i)
+    {
+        for (int j = 0; j < n; ++j)
+        {
+            fprintf(dns_file, "%1.1f ", A[n * i + j]);
+        }
+        fprintf(dns_file, "\n");
+    }
     delete[] row;
     delete[] col;
     delete[] val;
+    delete[] A;
 }
