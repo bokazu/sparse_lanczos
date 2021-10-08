@@ -90,9 +90,9 @@ COO形式の疎行列に対して、ランチョス法を適用し三重対角�
     このファイルには行列、ベクトルを整理した形で出力するための関数がある。ここでは、関数の説明を個別にすることはしないが、命名規則を紹介する。
     - `printmat_Type(int n, Type A)`<br>
         これはコマンドライン上に行列をN×N形式で出力する。
-    - `fprintmat_Type(FILE file,int n, double* A)<br>
+    - `fprintmat_Type(FILE file,int n, double* A)`<br>
         これはoutputファイルに行列をN×N形式で出力する。
-    - `printve_Type(int n, Type *B)<br>
+    - `printve_Type(int n, Type *B)`<br>
     C++の知識が少なく関数が乱立した形になってしまっているが、最近これをもう少し整理した形で書くことができるかもしれない機能を知ったのであとで整理しようと思う。
             
 
