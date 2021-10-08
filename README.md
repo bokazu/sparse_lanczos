@@ -64,5 +64,29 @@ COO形式の疎行列に対して、ランチョス法を適用し三重対角�
     ...
     ~~~
 
+## 各コードの説明
+- `make_sparse_mat/make_coo_mat`
+    ここで、COO形式の疎行列を作成する。ただし、LAPACKで行列を対角化したものと比較するためにDNS形式の行列も
+    生成している。コードの正確性が保証されれば、DNS形式の行列生成部分は削除してもよい。
+    サンプルファイルの命名規則は以下のようにした。
+    - 疎行列COO形式 : `coo_sample(number).txt`
+    - DNS形式 : `dns_sample(number).txt`
+- `main.cpp`
+    ここで、サンプルファイルの読み込み、そしてランチョス法の実行を行う。
+    計算結果はファイル形式で出力する。データファイルの命名規則は以下のようにした。
+    - ランチョス法で三重対角行列を作成し、それをLAPACKに解かせた結果を出力したもの
+        ...output(number).txt   (number)の部分に適当な数字を命名する。
+    - LAPACKで直接対角化させた結果
+        ...lapack_output(number).txt
+- `inputdata.cpp`
+    このファイルの中には3つの関数のコードがある。主に、サンプルファイルに記録した行列データの抽出用の関数である。
+    - `void get_matrix_size(string filename, int &n, int &elements)`
+        ...この関数はCOO形式で出力したサンプルファイルから行列の次元、非ゼロの要素数を読み取る。まずは、これでサイズの情報をゲットし、それをもとに配列のメモリを確保する。
+    - `void input_coo_data(string filename, int elements, int *row, int *col,double *val)`
+        この関数は疎行列をCOO形式で出力したファイルのrow、col、valの情報を抽出する。
+    -  `void input_dns_data(string filename, int n, double *A)`
+        この関数はDNS形式で行列情報を出力したファイルからデータを読み取る。
+            
+
 ## 注意
 サンプルの行列は外部ファイルで作成し、本コードではそのファイルから数値を読み取って使用する。
