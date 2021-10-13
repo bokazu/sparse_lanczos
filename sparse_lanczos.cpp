@@ -5,8 +5,8 @@ using namespace std;
 lapack_int LAPACKE_dstev(int matrix_order, char jobz, lapack_int n, double *d,
                          double *e, double *z, lapack_int ldz);
 
-void sparse_lanczos(FILE *file, int n, int elements, int *row, int *col,
-                    double *val, double *eigen_value)
+void sparse_lanczos(FILE *file, FILE *file_lapack, int n, int elements,
+                    int *row, int *col, double *val, double *eigen_value)
 {
     // setting Initial vector & standarbilization
     double **u = new double *[n];
@@ -32,6 +32,7 @@ void sparse_lanczos(FILE *file, int n, int elements, int *row, int *col,
     // Insert eigenvector when k == even & odd
     double *eigenvec_even = new double[n];
     double *eigenvec_odd = new double[n];
+    double *eigenvec_ans = new double[n];
     // Use as lapack argument. d = alpha, e = beta
     double *d = new double[n];
     double *e = new double[n];
@@ -82,7 +83,6 @@ void sparse_lanczos(FILE *file, int n, int elements, int *row, int *col,
             }
 
             // calculate eigenvalue of A(k)
-
             cblas_dcopy(n, alpha, 1, d, 1);
             cblas_dcopy(n, beta, 1, e, 1);
             if (k % 2 == 0)
@@ -120,11 +120,11 @@ void sparse_lanczos(FILE *file, int n, int elements, int *row, int *col,
             if (k > 0)
             {
                 eps = abs(eigenv_even[0] - eigenv_odd[0]);
-                if (eps > 1.0e-16)
+                if (eps > 1.0e-15)
                 {
                     checker = true;
                 }
-                else if (eps < 1.0e-16)
+                else if (eps < 1.0e-15)
                 {
                     checker = false;
                     cout << "break at count = " << k << endl;
@@ -137,15 +137,15 @@ void sparse_lanczos(FILE *file, int n, int elements, int *row, int *col,
             cout << "break at" << k << endl;
             break;
         }
-        count++;
+        count = k;
     }
     if (count % 2 == 0)
     {
-        cblas_dcopy(n, eigenv_odd, 1, eigen_value, 1);
+        cblas_dcopy(n, eigenv_even, 1, eigen_value, 1);
     }
     else
     {
-        cblas_dcopy(n, eigenv_even, 1, eigen_value, 1);
+        cblas_dcopy(n, eigenv_odd, 1, eigen_value, 1);
     }
 
     printf("eigen value = \n");
@@ -158,7 +158,22 @@ void sparse_lanczos(FILE *file, int n, int elements, int *row, int *col,
     fprintf(file, "\n");
     fprintf(file, "eigen value = \n");
     fprintvec_d(file, n, eigen_value);
+    cout << "count = " << count << endl;
+    if (count == n - 1)
+    {
+        dst_ground_eigenvec(n, count + 1, eigen_value[0], alpha, beta, u,
+                            eigenvec_ans);
+    }
+    else if (count < n - 1)
+    {
+        dst_ground_eigenvec(n, count + 1, eigen_value[0], alpha, beta, u,
+                            eigenvec_ans);
+    }
 
+    fprintf(file, "Eigen vector\n");
+    fprintvec_d(file, n, eigenvec_ans);
+
+    fprintf(file, "\n");
     cout << "end\n";
     for (int i = 0; i < n; i++)
     {
@@ -172,6 +187,7 @@ void sparse_lanczos(FILE *file, int n, int elements, int *row, int *col,
     delete[] eigenv_odd;
     delete[] eigenvec_even;
     delete[] eigenvec_odd;
+    delete[] eigenvec_ans;
     delete[] d;
     delete[] e;
 }

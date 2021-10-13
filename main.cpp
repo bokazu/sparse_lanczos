@@ -14,7 +14,7 @@ int main()
     int n, elements;
     // Setting Matrix(Column Major)
     /**************************Get COO DATA*******************************/
-    string coo_filename("sample/coo_sample0.txt");
+    string coo_filename("sample/coo_sample1.txt");
     ifstream coo_file(coo_filename);
     if (!coo_file.is_open())
     {
@@ -35,7 +35,7 @@ int main()
 
     /****************************Get DNS DATA******************************/
     double *A = new double[n * n];
-    string dns_filename("sample/dns_sample0.txt");
+    string dns_filename("sample/dns_sample1.txt");
     ifstream dns_file(dns_filename);
     if (!dns_file.is_open())
     {
@@ -43,6 +43,8 @@ int main()
         return EXIT_FAILURE;
     }
     input_dns_data(dns_filename, n, A);
+    // printmat_d(n, A);
+    // printf("\n");
     dns_file.close();
     /*********************************************************************/
 
@@ -50,8 +52,8 @@ int main()
     double *lw = new double[n];
 
     FILE *output_file, *lapack_file;
-    output_file = fopen("output0.txt", "w");
-    lapack_file = fopen("lapack_output0.txt", "w");
+    output_file = fopen("output1.txt", "w");
+    lapack_file = fopen("lapack_output1.txt", "w");
     if (output_file == NULL)
     {
         // fopen失敗
@@ -68,18 +70,22 @@ int main()
     }
 
     /**************************Lanczos法使用&lapackで対角化***************************/
-    sparse_lanczos(output_file, n, elements, row, col, val, eigen_value);
+    sparse_lanczos(output_file, lapack_file, n, elements, row, col, val,
+                   eigen_value);
 
     /********************行列そのものをlapackeに投げる。*****************/
-    printmat_d(n, A);
-    LAPACKE_dsyev(LAPACK_ROW_MAJOR, 'N', 'U', n, A, n, lw);
-    printf("LAPACKE's ANSWER\n");
-    printf("eigen value = \n");
-    printvec_d(n, lw);
-
+    // printmat_d(n, A);
+    LAPACKE_dsyev(LAPACK_COL_MAJOR, 'V', 'U', n, A, n, lw);
     fprintf(lapack_file, "LAPACKE's ANSWER\n");
-    fprintf(lapack_file, "eigen value = \n");
+    fprintf(lapack_file, "LAPACKE's eigen value = \n");
     fprintvec_d(lapack_file, n, lw);
+
+    fprintf(lapack_file, "LAPACKE's eingen vector of groundstate\n");
+    fprintmat_d(lapack_file, n, A);
+
+    // fprintf(lapack_file, "LAPACKE's ANSWER\n");
+    // fprintf(lapack_file, "eigen value = \n");
+    // fprintvec_d(lapack_file, n, lw);
 
     //メモリの開放
     delete[] A;

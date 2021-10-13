@@ -3,7 +3,7 @@ using namespace std;
 
 int main()
 {
-    int n = 100;
+    int n = 1000;
     int *col = new int[n * n];
     int *row = new int[n * n];
     double *val = new double[n * n];
@@ -13,7 +13,7 @@ int main()
     double prob = 0.3;
 
     FILE *coo_file, *dns_file;
-    coo_file = fopen("../sample/coo_sample1.txt", "w");
+    coo_file = fopen("../sample/coo_sample4.txt", "w");
     if (coo_file == NULL)
     {
         // fopen失敗
@@ -21,7 +21,7 @@ int main()
         fprintf(stdout, "fopen error fp[%p]\n", coo_file);
     }
 
-    dns_file = fopen("../sample/dns_sample1.txt", "w");
+    dns_file = fopen("../sample/dns_sample4.txt", "w");
     if (dns_file == NULL)
     {
         // fopen失敗
@@ -39,16 +39,16 @@ int main()
             {
                 row[index] = i;
                 col[index] = j;
-                val[index] = 1.0;
-                A[n * i + j] = 1.0;
+                val[index] = mtmp;
+                A[n * i + j] = mtmp;
                 index++;
                 //対称成分も格納する
                 if (i != j)
                 {
                     row[index] = j;
                     col[index] = i;
-                    val[index] = 1.0;
-                    A[n * j + i] = 1.0;
+                    val[index] = mtmp;
+                    A[n * j + i] = mtmp;
                     index++;
                 }
             }
@@ -59,14 +59,14 @@ int main()
     fprintf(coo_file, "%d %d %d\n", n, n, index);
     for (int i = 0; i < index; ++i)
     {
-        fprintf(coo_file, "%d %d %1.1f\n", row[i], col[i], val[i]);
+        fprintf(coo_file, "%d %d %1.5f\n", row[i], col[i], val[i]);
     }
 
     for (int i = 0; i < n; ++i)
     {
         for (int j = 0; j < n; ++j)
         {
-            fprintf(dns_file, "%1.1f ", A[n * i + j]);
+            fprintf(dns_file, "%1.5f ", A[n * i + j]);
         }
         fprintf(dns_file, "\n");
     }
