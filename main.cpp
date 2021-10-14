@@ -14,7 +14,7 @@ int main()
     int n, elements;
     // Setting Matrix(Column Major)
     /**************************Get COO DATA*******************************/
-    string coo_filename("sample/coo_sample1.txt");
+    string coo_filename("sample/coo_sample5.txt");
     ifstream coo_file(coo_filename);
     if (!coo_file.is_open())
     {
@@ -35,7 +35,7 @@ int main()
 
     /****************************Get DNS DATA******************************/
     double *A = new double[n * n];
-    string dns_filename("sample/dns_sample1.txt");
+    string dns_filename("sample/dns_sample5.txt");
     ifstream dns_file(dns_filename);
     if (!dns_file.is_open())
     {
@@ -52,8 +52,8 @@ int main()
     double *lw = new double[n];
 
     FILE *output_file, *lapack_file;
-    output_file = fopen("output1.txt", "w");
-    lapack_file = fopen("lapack_output1.txt", "w");
+    output_file = fopen("output5.txt", "w");
+    lapack_file = fopen("lapack_output5.txt", "w");
     if (output_file == NULL)
     {
         // fopen失敗

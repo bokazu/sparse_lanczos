@@ -13,7 +13,7 @@ int main()
     double prob = 0.3;
 
     FILE *coo_file, *dns_file;
-    coo_file = fopen("../sample/coo_sample4.txt", "w");
+    coo_file = fopen("../sample/coo_sample5.txt", "w");
     if (coo_file == NULL)
     {
         // fopen失敗
@@ -21,7 +21,7 @@ int main()
         fprintf(stdout, "fopen error fp[%p]\n", coo_file);
     }
 
-    dns_file = fopen("../sample/dns_sample4.txt", "w");
+    dns_file = fopen("../sample/dns_sample5.txt", "w");
     if (dns_file == NULL)
     {
         // fopen失敗
@@ -39,16 +39,16 @@ int main()
             {
                 row[index] = i;
                 col[index] = j;
-                val[index] = mtmp;
-                A[n * i + j] = mtmp;
+                val[index] = 1.0;
+                A[n * i + j] = 1.0;
                 index++;
                 //対称成分も格納する
                 if (i != j)
                 {
                     row[index] = j;
                     col[index] = i;
-                    val[index] = mtmp;
-                    A[n * j + i] = mtmp;
+                    val[index] = 1.0;
+                    A[n * j + i] = 1.0;
                     index++;
                 }
             }
