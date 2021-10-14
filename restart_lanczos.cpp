@@ -5,37 +5,19 @@ using namespace std;
 lapack_int LAPACKE_dstev(int matrix_order, char jobz, lapack_int n, double *d,
                          double *e, double *z, lapack_int ldz);
 
-void sparse_lanczos(FILE *file, FILE *file_lapack, int n, int elements,
-                    int *row, int *col, double *val, double *eigen_value)
+void restart_lanczos(FILE *file, FILE *file_lapack, int n, int elements,
+                     double **u, int *row, int *col, double *val,
+                     double *eigen_value, double *v, double *alpha,
+                     double *beta, double *eigenv_even, double *eigenv_odd,
+                     double *eigenvec_even, double *eigenvec_odd,
+                     double *eigenvec_ans, double *d, double *e)
 {
+    fprintf(file, "\n\n");
+    fprintf(file, "Restart Lanczos\n");
+    fprintf(file_lapack, "\n\n");
+    fprintf(file_lapack, "Restart Lanczos\n");
     // setting Initial vector & standarbilization
-    double **u = new double *[n];
-    for (int i = 0; i < n; i++)
-    {
-        u[i] = new double[n];
-    }
-    srand(time(NULL));
-    for (int i = 0; i < n; i++)
-    {
-        u[0][i] = (double)rand() / RAND_MAX;
-    }
     sdz(n, u[0]);
-
-    double *v = new double[n];
-    double *alpha =
-        new double[n];  // Insert diagonal elements of tridiagonal matrix
-    double *beta =
-        new double[n];  // Insert subdiagonal elements of tridiagonal matrix
-    // Insert eigenvalue when k == even & odd
-    double *eigenv_even = new double[n];
-    double *eigenv_odd = new double[n];
-    // Insert eigenvector when k == even & odd
-    double *eigenvec_even = new double[n];
-    double *eigenvec_odd = new double[n];
-    double *eigenvec_ans = new double[n];
-    // Use as lapack argument. d = alpha, e = beta
-    double *d = new double[n];
-    double *e = new double[n];
 
     double beta_pow2 = 0;
     double eps = 1.0;
@@ -172,26 +154,4 @@ void sparse_lanczos(FILE *file, FILE *file_lapack, int n, int elements,
 
     fprintf(file, "Eigen vector\n");
     fprintvec_d(file, n, eigenvec_ans);
-
-    fprintf(file, "\n");
-
-    restart_lanczos(file, file_lapack, n, elements, u, row, col, val,
-                    eigen_value, v, alpha, beta, eigenv_even, eigenv_odd,
-                    eigenvec_even, eigenvec_odd, eigenvec_ans, d, e);
-
-    for (int i = 0; i < n; i++)
-    {
-        delete u[i];
-    }
-    delete[] u;
-    delete[] v;
-    delete[] alpha;
-    delete[] beta;
-    delete[] eigenv_even;
-    delete[] eigenv_odd;
-    delete[] eigenvec_even;
-    delete[] eigenvec_odd;
-    delete[] eigenvec_ans;
-    delete[] d;
-    delete[] e;
 }

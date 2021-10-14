@@ -91,4 +91,10 @@ void Initiailize_vec(int n, double* vec);
 void Initiailize_vec(int n, int* vec);
 void dst_ground_eigenvec(int n, int m, double groundstate_eigenv, double* alpha,
                          double* beta, double** u, double* eigenvec);
+void restart_lanczos(FILE* file, FILE* file_lapack, int n, int elements,
+                     double** u, int* row, int* col, double* val,
+                     double* eigen_value, double* v, double* alpha,
+                     double* beta, double* eigenv_even, double* eigenv_odd,
+                     double* eigenvec_even, double* eigenvec_odd,
+                     double* eigenvec_ans, double* d, double* e);
 #endif
