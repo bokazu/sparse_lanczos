@@ -15,9 +15,25 @@ void restart_lanczos(FILE *file, FILE *file_lapack, int n, int elements,
     fprintf(file, "\n\n");
     fprintf(file, "Restart Lanczos\n");
     fprintf(file_lapack, "\n\n");
-    fprintf(file_lapack, "Restart Lanczos\n");
+    fprintf(file_lapack, "restart Lanczos\n");
     // setting Initial vector & standarbilization
-    sdz(n, u[0]);
+    for (int i = 0; i < n; i++)
+    {
+        Initiailize_vec(n, u[i]);
+    }
+
+    cblas_dcopy(n, eigenvec_ans, 1, u[0], 1);
+
+    Initiailize_vec(n, eigen_value);
+    Initiailize_vec(n, eigenv_even);
+    Initiailize_vec(n, eigenv_odd);
+    Initiailize_vec(n, eigenvec_even);
+    Initiailize_vec(n, eigenvec_odd);
+    Initiailize_vec(n, alpha);
+    Initiailize_vec(n, beta);
+    Initiailize_vec(n, eigenvec_ans);
+    Initiailize_vec(n, d);
+    Initiailize_vec(n, e);
 
     double beta_pow2 = 0;
     double eps = 1.0;
@@ -130,7 +146,7 @@ void restart_lanczos(FILE *file, FILE *file_lapack, int n, int elements,
         cblas_dcopy(n, eigenv_odd, 1, eigen_value, 1);
     }
 
-    printf("eigen value = \n");
+    printf("re eigen value = \n");
     printvec_d(n, eigen_value);
     fprintf(file, "\n");
     fprintf(file, "\n");
@@ -138,7 +154,7 @@ void restart_lanczos(FILE *file, FILE *file_lapack, int n, int elements,
     fprintf(file, "%d\n", count);
     fprintf(file, "\n");
     fprintf(file, "\n");
-    fprintf(file, "eigen value = \n");
+    fprintf(file, "re eigen value = \n");
     fprintvec_d(file, n, eigen_value);
     cout << "count = " << count << endl;
     if (count == n - 1)
@@ -152,6 +168,6 @@ void restart_lanczos(FILE *file, FILE *file_lapack, int n, int elements,
                             eigenvec_ans);
     }
 
-    fprintf(file, "Eigen vector\n");
+    fprintf(file, "re eigen vector\n");
     fprintvec_d(file, n, eigenvec_ans);
 }

@@ -175,6 +175,8 @@ void sparse_lanczos(FILE *file, FILE *file_lapack, int n, int elements,
 
     fprintf(file, "\n");
 
+    /************************Restart Lanczos****************************/
+    /********If you don't want to, comment out below code.**************/
     restart_lanczos(file, file_lapack, n, elements, u, row, col, val,
                     eigen_value, v, alpha, beta, eigenv_even, eigenv_odd,
                     eigenvec_even, eigenvec_odd, eigenvec_ans, d, e);
